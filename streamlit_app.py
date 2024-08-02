@@ -2,7 +2,7 @@ import openai
 import streamlit as st
 
 # Set your OpenAI API key
-openai.api_key = "sk-svcacct-Bhg6VY3b9HpZfrOHyi9MT3BlbkFJPIRfEowOZB8VT2Stlb18"
+openai.api_key = "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"
 
 # Initial system message
 messages = [{"role": "system", "content": "You are a helpful assistant capable of providing information and assistance."}]
