@@ -7,3 +7,4 @@ matplotlib
 seaborn
 google-generativeai
 joblib
+python-dotenv
