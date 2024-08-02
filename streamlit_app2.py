@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.decomposition import PCA
 
+st.set_page_config(page_title="Precision App", page_icon=":bar_chart:")
+st.sidebar.image("Unknown.png", width=100)
+
 st.title('Precision Calculation and Visualization for Random Data')
 
 data_size = st.slider('Select the size of the dataset', 100, 1000, 200)
