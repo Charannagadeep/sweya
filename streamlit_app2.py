@@ -9,7 +9,7 @@ import seaborn as sns
 from sklearn.decomposition import PCA
 
 st.set_page_config(page_title="Precision App", page_icon=":bar_chart:")
-st.sidebar.image("Unknown.png", width=100)
+st.sidebar.image("Unknown.png", width=1000)
 
 st.title('Precision Calculation and Visualization for Random Data')
 
