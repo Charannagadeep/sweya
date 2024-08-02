@@ -7,19 +7,26 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-GOOGLE_API_KEY = os.getenv('AIzaSyABUCj78nfkI8K5DW6vOApWhataFnH6WHs')  # Update this to match your .env variable name
+
+# Fetch the API key from environment variables
+GOOGLE_API_KEY = os.getenv('AIzaSyABUCj78nfkI8K5DW6vOApWhataFnH6WHs')
 
 if GOOGLE_API_KEY is None:
     st.error("API key not found in environment variables.")
-else:
-    genai.configure(api_key=GOOGLE_API_KEY)
+    st.stop()
+
+genai.configure(api_key=GOOGLE_API_KEY)
 
 # Create a data/ folder if it doesn't already exist
 if not os.path.exists('data/'):
     os.makedirs('data/')
 
 # Load past chats
-past_chats = joblib.load('data/past_chats_list') if os.path.exists('data/past_chats_list') else {}
+past_chats_path = 'data/past_chats_list'
+if os.path.exists(past_chats_path):
+    past_chats = joblib.load(past_chats_path)
+else:
+    past_chats = {}
 
 # Sidebar for past chats
 with st.sidebar:
@@ -60,6 +67,7 @@ try:
     st.session_state.chat = st.session_state.model.start_chat(history=st.session_state.gemini_history)
 except Exception as e:
     st.error(f"Failed to initialize chat model: {e}")
+    st.stop()
 
 # Display chat messages from history
 for message in st.session_state.messages:
@@ -70,11 +78,11 @@ for message in st.session_state.messages:
 if prompt := st.chat_input('Your message here...'):
     if st.session_state.chat_id not in past_chats:
         past_chats[st.session_state.chat_id] = st.session_state.chat_title
-        joblib.dump(past_chats, 'data/past_chats_list')
+        joblib.dump(past_chats, past_chats_path)
 
     with st.chat_message('user'):
         st.markdown(prompt)
-    
+
     st.session_state.messages.append({'role': 'user', 'content': prompt})
 
     # Send message to AI
