@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 st.title('Precision Calculation for Random Data')
 data_size = st.slider('Select the size of the dataset', 100, 1000, 200)
-X = np.random.rand(data_size, 5)  # 5 random features
+X = np.random.rand(data_size, 5) 
 y = np.random.randint(0, 2, size=data_size)  # binary target (0 or 1)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 model = LogisticRegression()
