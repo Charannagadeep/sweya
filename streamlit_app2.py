@@ -32,7 +32,7 @@ pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
 
 plt.figure(figsize=(8, 5))
-plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='coolwarm', alpha=0.7)
+plt.scatter(X_pca[:, 0], X_pca[:, 1], cmap='coolwarm', alpha=0.7)
 plt.title('Random Data (Reduced to 2D using PCA)')
 plt.xlabel('PCA Component 1')
 plt.ylabel('PCA Component 2')
@@ -50,7 +50,6 @@ st.pyplot(plt)
 
 if st.checkbox('Show dataset'):
     st.write(pd.DataFrame(X, columns=[f'Feature {i+1}' for i in range(X.shape[1])]))
-    st.write('Target', y)
 
 st.subheader('Feature Importance')
 importance = model.coef_[0]
