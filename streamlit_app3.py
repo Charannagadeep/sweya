@@ -7,8 +7,12 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-GOOGLE_API_KEY = os.getenv('AIzaSyABUCj78nfkI8K5DW6vOApWhataFnH6WHs')  # Make sure to update the key name in .env file
-genai.configure(api_key=GOOGLE_API_KEY)
+GOOGLE_API_KEY = os.getenv('AIzaSyABUCj78nfkI8K5DW6vOApWhataFnH6WHs')  # Update this to match your .env variable name
+
+if GOOGLE_API_KEY is None:
+    st.error("API key not found in environment variables.")
+else:
+    genai.configure(api_key=GOOGLE_API_KEY)
 
 # Create a data/ folder if it doesn't already exist
 if not os.path.exists('data/'):
@@ -51,8 +55,11 @@ else:
     st.session_state.gemini_history = []
 
 # Initialize chat model
-st.session_state.model = genai.GenerativeModel('gemini-pro')
-st.session_state.chat = st.session_state.model.start_chat(history=st.session_state.gemini_history)
+try:
+    st.session_state.model = genai.GenerativeModel('gemini-pro')
+    st.session_state.chat = st.session_state.model.start_chat(history=st.session_state.gemini_history)
+except Exception as e:
+    st.error(f"Failed to initialize chat model: {e}")
 
 # Display chat messages from history
 for message in st.session_state.messages:
@@ -71,22 +78,26 @@ if prompt := st.chat_input('Your message here...'):
     st.session_state.messages.append({'role': 'user', 'content': prompt})
 
     # Send message to AI
-    response = st.session_state.chat.send_message(prompt, stream=True)
-    full_response = ''
-    message_placeholder = st.empty()
+    try:
+        response = st.session_state.chat.send_message(prompt, stream=True)
+        full_response = ''
+        message_placeholder = st.empty()
 
-    # Stream response
-    for chunk in response:
-        text = chunk.text if chunk.text else ''
-        for ch in text.split(' '):
-            full_response += ch + ' '
-            time.sleep(0.05)
-            message_placeholder.write(full_response + '▌')
+        # Stream response
+        for chunk in response:
+            if chunk.text:
+                for ch in chunk.text.split(' '):
+                    full_response += ch + ' '
+                    time.sleep(0.05)
+                    message_placeholder.write(full_response + '▌')
 
-    message_placeholder.write(full_response)
-    st.session_state.messages.append({'role': 'ai', 'content': full_response, 'avatar': '✨'})
-    st.session_state.gemini_history = st.session_state.chat.history
+        message_placeholder.write(full_response)
+        st.session_state.messages.append({'role': 'ai', 'content': full_response, 'avatar': '✨'})
+        st.session_state.gemini_history = st.session_state.chat.history
 
-    # Save to file
-    joblib.dump(st.session_state.messages, messages_file)
-    joblib.dump(st.session_state.gemini_history, gemini_history_file)
+        # Save to file
+        joblib.dump(st.session_state.messages, messages_file)
+        joblib.dump(st.session_state.gemini_history, gemini_history_file)
+
+    except Exception as e:
+        st.error(f"Failed to get a response from AI: {e}")
