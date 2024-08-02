@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')  # Make sure to update the key name in .env file
+GOOGLE_API_KEY = os.getenv('AIzaSyABUCj78nfkI8K5DW6vOApWhataFnH6WHs')  # Make sure to update the key name in .env file
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Create a data/ folder if it doesn't already exist
